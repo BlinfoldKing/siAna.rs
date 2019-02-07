@@ -31,7 +31,7 @@ impl Solver {
 
     pub fn mutate_state(state: [f64; 2]) -> [f64; 2] {
         let mut rng = rand::thread_rng();
-        let modifier = [rng.gen_range(-1.0, 1.0), rng.gen_range(-1.0, 1.0)];
+        let modifier = [rng.gen_range(-2.0, 2.0), rng.gen_range(-2.0, 2.0)];
         [state[0] * modifier[0], state[1] * modifier[1]]
     }
 
