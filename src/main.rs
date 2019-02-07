@@ -1,4 +1,7 @@
+extern crate rand;
+
 use std::f64::consts::E;
+use rand::Rng;
 
 struct Solver {
     pub iterations: u64,
@@ -7,21 +10,35 @@ struct Solver {
 }
 
 impl Solver {
+    
+    pub fn new(initial_temperature: f64, cooling_rate: f64) -> Self {
+        Solver {
+            iterations: 0,
+            initial_temperature: initial_temperature,
+            temperature_cooling_rate: cooling_rate
+        }
+    }
+
     pub fn search_area(x: [f64; 2]) -> f64 {
-        x[0].sin() + x[1].cos() + 
-            (0.8 * E.powf(1.0 - (x[0].powi(2) + x[1].powi(2)).sqrt()))
+        -(x[0].sin() * x[1].cos() + 
+            (0.8 * E.powf(1.0 - (x[0].powi(2) + x[1].powi(2)).sqrt())))
     }
     
     pub fn generate_state() -> [f64; 2] {
-        [1.0, 1.0]
+        let mut rng = rand::thread_rng();
+        [rng.gen_range(-10.0, 10.0), rng.gen_range(-10.0, 10.0)]
     }
 
     pub fn mutate_state(state: [f64; 2]) -> [f64; 2] {
-        state
+        let mut rng = rand::thread_rng();
+        let modifier = [rng.gen_range(-1.0, 1.0), rng.gen_range(-1.0, 1.0)];
+        [state[0] * modifier[0], state[1] * modifier[1]]
     }
 
     pub fn random_trial(dE: f64, temperature: f64) -> bool {
-        true
+        let mut rng = rand::thread_rng();
+        let R = rng.gen_range(0.0, 1.0);
+        E.powf(-dE/temperature) > R
     }
 
     pub fn solve(&mut self) -> [f64; 2] {
@@ -48,10 +65,8 @@ impl Solver {
 }
 
 fn main() {
-    let mut solver = Solver {
-        iterations: 0,
-        initial_temperature: 10000.0,
-        temperature_cooling_rate: 0.1
-    };
-    println!("{:?}", solver.solve());
+    let mut solver = Solver::new(100000000000000.0, 0.1); 
+    let solution = solver.solve();
+    println!("{}", Solver::search_area(solution));
+    println!("{:?}", solution);
 }
