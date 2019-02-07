@@ -1,6 +1,0 @@
-[package]
-name = "siAna"
-version = "0.1.0"
-authors = ["Ganesha Danu <ganeshadanu1@gmail.com>"]
-
-[dependencies]
