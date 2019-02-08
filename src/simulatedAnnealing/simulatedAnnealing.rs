@@ -7,6 +7,7 @@ pub struct Solver {
     pub iterations: u64,
     pub initial_temperature: f64,
     pub temperature_cooling_rate: f64,
+    pub state_hist: Vec<[f64; 2]>
 }
 
 impl Solver {
@@ -15,7 +16,8 @@ impl Solver {
         Solver {
             iterations: 0,
             initial_temperature: initial_temperature,
-            temperature_cooling_rate: cooling_rate
+            temperature_cooling_rate: cooling_rate,
+            state_hist: Vec::new()
         }
     }
 
@@ -32,7 +34,23 @@ impl Solver {
     pub fn mutate_state(state: [f64; 2]) -> [f64; 2] {
         let mut rng = rand::thread_rng();
         let modifier = [rng.gen_range(-2.0, 2.0), rng.gen_range(-2.0, 2.0)];
-        [state[0] * modifier[0], state[1] * modifier[1]]
+        let stateX1 = 
+            if state[0] * modifier[0] > 10.0 {
+                10.0
+            } else if state[0] * modifier[0] < -10.0 {
+                -10.0
+            } else {
+                state[0] * modifier[0]
+            };
+        let stateX2 = 
+            if state[1] * modifier[1] > 10.0 {
+                10.0
+            } else if state[1] * modifier[1] < -10.0 {
+                -10.0
+            } else {
+                state[1] * modifier[1]
+            };
+        [stateX1, stateX2]
     }
 
     pub fn random_trial(dE: f64, temperature: f64) -> bool {
@@ -56,6 +74,8 @@ impl Solver {
                     current_state = new_state; 
                 }
             }
+            self.iterations += 1;
+            self.state_hist.push(current_state);
             temperature = temperature * self.temperature_cooling_rate;
             if temperature == 0.0 { break; }
         }
