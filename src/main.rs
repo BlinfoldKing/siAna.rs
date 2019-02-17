@@ -25,7 +25,6 @@ fn main() {
         stateZ.push(Solver::search_area(state));
     }
 	
-        println!("{:?}",stateX);
 	let x = [solution[0]];
 	let y = [solution[1]];
 	let z = [Solver::search_area(solution)];
@@ -40,10 +39,11 @@ fn main() {
 	let mut figure = Figure::new();
 	figure
 		.axes3d()
-		.surface(mat.iter(), 20, 20, Some((-10.0, -10.0, 10.0, 10.0)), &[Caption("Surface")])
-		.show_contours(true, false, ContourStyle::Linear, AutoOption::Auto, AutoOption::Auto)
+		.surface(
+            mat.iter(), 20, 20, Some((-10.0, -10.0, 10.0, 10.0)), &[Caption("Surface")])
+		.show_contours(
+            true, false, ContourStyle::Linear, AutoOption::Auto, AutoOption::Auto)
 		.points(&stateX, &stateY, &stateZ, &[Color("green"), PointSymbol('S')])
-		// .lines(&stateX, &stateY, &stateZ, &[Color("black"), PointSymbol('S')])
 		.points(&x, &y, &z, &[Color("blue"), PointSymbol('S')]);
 	figure.show();
 
